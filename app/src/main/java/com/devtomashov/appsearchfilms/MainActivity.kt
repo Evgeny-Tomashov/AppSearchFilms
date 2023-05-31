@@ -1,20 +1,29 @@
 package com.devtomashov.appsearchfilms
 
+import TopSpacingItemDecoration
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.devtomashov.appsearchfilms.databinding.ActivityMainBinding
 
-
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    private var binding: ActivityMainBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding!!.root)
 
+        //Запускаем фрагмент при старте
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_placeholder, HomeFragment())
+            .addToBackStack(null)
+            .commit()
 
-        binding.topAppBar.setOnMenuItemClickListener {
+        binding?.topAppBar?.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.settings -> {
                     Toast.makeText(
@@ -29,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.bottomNavigation.setOnNavigationItemSelectedListener {
+        binding?.bottomNavigation?.setOnItemSelectedListener {
 
             when (it.itemId) {
                 R.id.favorites -> {
@@ -63,7 +72,43 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    fun launchDetailsFragment(film: Film) {
+        //Создаем "посылку"
+        val bundle = Bundle()
+        //Кладем наш фильм в "посылку"
+        bundle.putParcelable("film", film)
+        //Кладем фрагмент с деталями в перменную
+        val fragment = DetailsFragment()
+        //Прикрепляем нашу "посылку" к фрагменту
+        fragment.arguments = bundle
+
+        //Запускаем фрагмент
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_placeholder, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        AlertDialog.Builder(this)
+            .setTitle("Вы хотите выйти?")
+            .setIcon(R.drawable.round_menu)
+            .setPositiveButton("Да") { _, _ ->
+                finish()
+            }
+            .setNegativeButton("Нет") { _, _ ->
+
+            }
+            .setNeutralButton("Не знаю") { _, _ ->
+                Toast.makeText(this, "Решайся", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
 }
+
+
 
 
 
