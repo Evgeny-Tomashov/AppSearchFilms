@@ -10,19 +10,46 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.devtomashov.appsearchfilms.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+
     private var binding: ActivityMainBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
 
+        initNavigation()
+
         //Запускаем фрагмент при старте
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragment_placeholder, HomeFragment())
+            .add(R.id.fragment_placeholder, HomeFragment())
             .addToBackStack(null)
             .commit()
 
+    }
+
+    fun launchDetailsFragment(film: Film) {
+        //Создаем "посылку"
+        val bundle = Bundle()
+        //Кладем наш фильм в "посылку"
+        bundle.putParcelable("film", film)
+        //Кладем фрагмент с деталями в перменную
+        val fragment = DetailsFragment()
+        //Прикрепляем нашу "посылку" к фрагменту
+        fragment.arguments = bundle
+
+        //Запускаем фрагмент
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_placeholder, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+
+    private fun initNavigation() {
         binding?.topAppBar?.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.settings -> {
@@ -42,11 +69,11 @@ class MainActivity : AppCompatActivity() {
 
             when (it.itemId) {
                 R.id.favorites -> {
-                    Toast.makeText(
-                        this,
-                        resources.getString(R.string.menu_favorites_title),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_placeholder, FavoritesFragment())
+                        .addToBackStack(null)
+                        .commit()
                     true
                 }
 
@@ -72,23 +99,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    fun launchDetailsFragment(film: Film) {
-        //Создаем "посылку"
-        val bundle = Bundle()
-        //Кладем наш фильм в "посылку"
-        bundle.putParcelable("film", film)
-        //Кладем фрагмент с деталями в перменную
-        val fragment = DetailsFragment()
-        //Прикрепляем нашу "посылку" к фрагменту
-        fragment.arguments = bundle
 
-        //Запускаем фрагмент
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_placeholder, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
     override fun onBackPressed() {
         super.onBackPressed()
 
@@ -107,9 +118,4 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 }
-
-
-
-
-
 
