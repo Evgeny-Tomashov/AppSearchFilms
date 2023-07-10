@@ -25,13 +25,15 @@ class FavoritesFragment : Fragment() {
         return view
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        favBinding = null
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        AnimationHelper.performFragmentCircularRevealAnimation(
+            binding!!.favoritesFragmentRoot,
+            requireActivity(),
+            2
+        )
+
         //Получаем список при транзакции фрагмента
         val favoritesList: List<Film> = emptyList()
 
@@ -52,5 +54,10 @@ class FavoritesFragment : Fragment() {
         }
         //Кладем нашу БД в RV
         filmsAdapter.addItems(favoritesList)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        favBinding = null
     }
 }
