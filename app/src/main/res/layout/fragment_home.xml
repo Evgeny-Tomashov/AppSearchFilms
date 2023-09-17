@@ -8,7 +8,7 @@
     android:visibility="invisible"
     tools:visibility="visible"
     android:background="@drawable/background_home"
-    tools:context=".HomeFragment">
+
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
