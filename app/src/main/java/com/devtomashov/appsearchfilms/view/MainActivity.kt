@@ -12,6 +12,7 @@ import com.devtomashov.appsearchfilms.view.fragments.DetailsFragment
 import com.devtomashov.appsearchfilms.view.fragments.FavoritesFragment
 import com.devtomashov.appsearchfilms.view.fragments.HomeFragment
 import com.devtomashov.appsearchfilms.view.fragments.SelectionsFragment
+import com.devtomashov.appsearchfilms.view.fragments.SettingsFragment
 import com.devtomashov.appsearchfilms.view.fragments.WatchLaterFragment
 
 class MainActivity : AppCompatActivity() {
@@ -58,16 +59,6 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initNavigation() {
-        binding?.topAppBar?.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.settings -> {
-                    Toast.makeText(this, R.string.menu_settings_title, Toast.LENGTH_SHORT).show()
-                    true
-                }
-
-                else -> false
-            }
-        }
 
         binding?.bottomNavigation?.setOnItemSelectedListener {
 
@@ -99,6 +90,13 @@ class MainActivity : AppCompatActivity() {
                     val tag = "selections"
                     val fragment = checkFragmentExistence(tag)
                     changeFragment(fragment ?: SelectionsFragment(), tag)
+                    true
+                }
+
+                R.id.settings -> {
+                    val tag = "settings"
+                    val fragment = checkFragmentExistence(tag)
+                    changeFragment( fragment?: SettingsFragment(), tag)
                     true
                 }
 
