@@ -9,6 +9,7 @@ import javax.inject.Singleton
 
 @Module
 class DatabaseModule {
+
     @Singleton
     @Provides
     fun provideDatabaseHelper(context: Context) = DatabaseHelper(context)
