@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">AppSearchFilms</string>
     <string name="page_title">Search</string>
     <string name="btn_home">Main</string>
     <string name="menu_favorites_title">Favorite</string>
     <string name="menu_watch_later_title">Watch later</string>
     <string name="menu_selections_title">Selections</string>
-    <string name="menu_settings_title">Settings</string>
+    <string name="menu_settings_title_text">Settings</string>
+    <string name="radio_button_popular">Popular</string>
+    <string name="radio_button_top_rated">Top</string>
+    <string name="radio_button_upcoming">Soon</string>
+    <string name="radio_button_playing">In cinema</string>
+    <string name="radio_group_header">Selection on the main screen</string>
 </resources>

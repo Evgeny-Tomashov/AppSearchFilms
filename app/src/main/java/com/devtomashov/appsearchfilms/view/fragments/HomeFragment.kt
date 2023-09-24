@@ -12,27 +12,24 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.devtomashov.appsearchfilms.view.rv_adapters.FilmListRecyclerAdapter
 import com.devtomashov.appsearchfilms.view.MainActivity
-import com.devtomashov.appsearchfilms.R
 import com.devtomashov.appsearchfilms.databinding.FragmentHomeBinding
-import com.devtomashov.appsearchfilms.domain.Film
+import com.devtomashov.appsearchfilms.data.entity.Film
 import com.devtomashov.appsearchfilms.utils.AnimationHelper
 import com.devtomashov.appsearchfilms.viewmodel.HomeFragmentViewModel
 import java.util.Locale
 
+@Suppress("DEPRECATION")
 class HomeFragment : Fragment() {
-    private var bindingHome: FragmentHomeBinding? = null
-
-    private val binding get() = bindingHome!!
-
-    private lateinit var filmsAdapter: FilmListRecyclerAdapter
-
     private val viewModel by lazy {
         ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
     }
+
+    private lateinit var filmsAdapter: FilmListRecyclerAdapter
+    private lateinit var binding: FragmentHomeBinding
     private var filmsDataBase = listOf<Film>()
         //Используем backing field
         set(value) {
-            //Если придет такое же значение, то мы выходим из метода
+            //Если придет такое же значение то мы выходим из метода
             if (field == value) return
             //Если пришло другое значение, то кладем его в переменную
             field = value
@@ -40,59 +37,81 @@ class HomeFragment : Fragment() {
             filmsAdapter.addItems(field)
         }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        bindingHome = FragmentHomeBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        AnimationHelper.performFragmentCircularRevealAnimation(binding.homeFragmentRoot, requireActivity(), 1)
+
+        initSearchView()
+        initPullToRefresh()
+        initRecycler()
+
+        //Кладем нашу БД в RV
         viewModel.filmsListLiveData.observe(viewLifecycleOwner, Observer<List<Film>> {
             filmsDataBase = it
+            filmsAdapter.addItems(it)
         })
-        AnimationHelper.performFragmentCircularRevealAnimation(
-            binding.homeFragmentRoot,
-            requireActivity(),
-            1
-        )
+    }
 
-        bindingHome?.searchView?.setOnClickListener {
-            bindingHome?.searchView?.isIconified = false
+    private fun initPullToRefresh() {
+        //Вешаем слушатель, чтобы вызвался pull to refresh
+        binding.pullToRefresh.setOnRefreshListener {
+            //Чистим адаптер(items нужно будет сделать паблик или создать для этого публичный метод)
+            filmsAdapter.items.clear()
+            //Делаем новый запрос фильмов на сервер
+            viewModel.getFilms()
+            //Убираем крутящееся колечко
+            binding.pullToRefresh.isRefreshing = false
+        }
+    }
+
+    private fun initSearchView() {
+        binding.searchView.setOnClickListener {
+            binding.searchView.isIconified = false
         }
 
+
         //Подключаем слушателя изменений введенного текста в поиска
-        bindingHome?.searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             //Этот метод отрабатывает при нажатии кнопки "поиск" на софт клавиатуре
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
-
             //Этот метод отрабатывает на каждое изменения текста
             override fun onQueryTextChange(newText: String): Boolean {
                 //Если ввод пуст то вставляем в адаптер всю БД
                 if (newText.isEmpty()) {
-                    filmsAdapter.addItems(filmsDataBase)
+                    viewModel.filmsListLiveData.observe(viewLifecycleOwner) {
+                        filmsAdapter.addItems(it)
+                    }
                     return true
                 }
-                //Фильтруем список на поискк подходящих сочетаний
-                val result = filmsDataBase.filter {
-                    //Чтобы все работало правильно, нужно и запрос, и имя фильма приводить к нижнему регистру
-                    it.title.lowercase(Locale.getDefault())
-                        .contains(newText.lowercase(Locale.getDefault()))
+                //Фильтруем список на поиск подходящих сочетаний
+                viewModel.filmsListLiveData.observe(viewLifecycleOwner) {
+                    filmsAdapter.addItems(it.filter { it.title.lowercase(Locale.getDefault()).contains(newText.lowercase(Locale.getDefault())) })
                 }
-                //Добавляем в адаптер
-                filmsAdapter.addItems(result)
                 return true
             }
         })
+    }
 
+    private fun initRecycler() {
         //находим наш RV
-        bindingHome?.mainRecycler?.apply {
+        binding.mainRecycler.apply {
             filmsAdapter =
                 FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
                     override fun click(film: Film) {
@@ -101,21 +120,12 @@ class HomeFragment : Fragment() {
                 })
             //Присваиваем адаптер
             adapter = filmsAdapter
-            //Присвои layoutmanager
+            //Присвоим layoutmanager
             layoutManager = LinearLayoutManager(requireContext())
             //Применяем декоратор для отступов
             val decorator = TopSpacingItemDecoration(8)
             addItemDecoration(decorator)
         }
-
-        //Кладем нашу БД в RV
-        filmsAdapter.addItems(filmsDataBase)
-
-    }
-
-    override fun onDestroyView() {
-        bindingHome = null
-        super.onDestroyView()
     }
 
 }
