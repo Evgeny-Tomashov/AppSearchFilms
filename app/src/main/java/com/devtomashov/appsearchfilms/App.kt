@@ -3,6 +3,10 @@ package com.devtomashov.appsearchfilms
 import android.app.Application
 import com.devtomashov.appsearchfilms.di.AppComponent
 import com.devtomashov.appsearchfilms.di.DaggerAppComponent
+import com.devtomashov.appsearchfilms.di.DatabaseModule
+import com.devtomashov.appsearchfilms.di.DomainModule
+import com.devtomashov.appsearchfilms.di.RemoteModule
+
 
 
 class App : Application() {
@@ -12,7 +16,11 @@ class App : Application() {
         super.onCreate()
         instance = this
         //Создаем компонент
-        dagger = DaggerAppComponent.create()
+        dagger = DaggerAppComponent.builder()
+            .remoteModule(RemoteModule())
+            .databaseModule(DatabaseModule())
+            .domainModule(DomainModule(this))
+            .build()
     }
 
     companion object {
