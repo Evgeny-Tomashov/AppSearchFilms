@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.devtomashov.appsearchfilms.view.rv_adapters.FilmListRecyclerAdapter
 import com.devtomashov.appsearchfilms.view.MainActivity
 import com.devtomashov.appsearchfilms.databinding.FragmentFavoritesBinding
-import com.devtomashov.appsearchfilms.domain.Film
+import com.devtomashov.appsearchfilms.data.entity.Film
 import com.devtomashov.appsearchfilms.utils.AnimationHelper
 
 class FavoritesFragment : Fragment() {
