@@ -1,5 +1,6 @@
 package com.devtomashov.appsearchfilms.domain
 
+import androidx.lifecycle.LiveData
 import com.devtomashov.appsearchfilms.data.API
 import com.devtomashov.appsearchfilms.data.entity.TmdbResultsDto
 import com.devtomashov.appsearchfilms.data.MainRepository
@@ -24,7 +25,7 @@ class Interactor(val repo: MainRepository, private val retrofitService: TmdbApi,
                 list.forEach {
                     repo.putToDb(list)
                 }
-                callback.onSuccess(list)
+                callback.onSuccess()
             }
 
             override fun onFailure(call: Call<TmdbResultsDto>, t: Throwable) {
@@ -40,6 +41,6 @@ class Interactor(val repo: MainRepository, private val retrofitService: TmdbApi,
     //Метод для получения настроек
     fun getDefaultCategoryFromPreferences() = preferences.getDefaultCategory()
 
-    fun getFilmsFromDB(): List<Film> = repo.getAllFromDB()
+    fun getFilmsFromDB(): LiveData<List<Film>> = repo.getAllFromDB()
 
 }

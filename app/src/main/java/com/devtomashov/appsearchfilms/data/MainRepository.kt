@@ -1,5 +1,6 @@
 package com.devtomashov.appsearchfilms.data
 
+import androidx.lifecycle.LiveData
 import com.devtomashov.appsearchfilms.data.DAO.FilmDao
 import com.devtomashov.appsearchfilms.data.entity.Film
 import java.util.concurrent.Executors
@@ -13,7 +14,6 @@ class MainRepository(private val filmDao: FilmDao) {
         }
     }
 
-    fun getAllFromDB(): List<Film> {
-        return filmDao.getCachedFilms()
-    }
+    fun getAllFromDB(): LiveData<List<Film>> =
+        filmDao.getCachedFilms()
 }
