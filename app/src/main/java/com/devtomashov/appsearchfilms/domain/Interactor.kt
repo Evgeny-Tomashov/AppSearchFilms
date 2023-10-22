@@ -1,34 +1,47 @@
 package com.devtomashov.appsearchfilms.domain
 
 import com.devtomashov.appsearchfilms.data.API
-import com.devtomashov.appsearchfilms.data.entity.TmdbResultsDto
 import com.devtomashov.appsearchfilms.data.MainRepository
 import com.devtomashov.appsearchfilms.data.PreferenceProvider
 import com.devtomashov.appsearchfilms.data.TmdbApi
+import com.devtomashov.appsearchfilms.data.entity.Film
+import com.devtomashov.appsearchfilms.data.entity.TmdbResultsDto
 import com.devtomashov.appsearchfilms.utils.Converter
-import com.devtomashov.appsearchfilms.viewmodel.HomeFragmentViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class Interactor(val repo: MainRepository, private val retrofitService: TmdbApi, private val preferences: PreferenceProvider) {
-    //В конструктор мы будем передавать коллбэк из вью модели, чтобы реагировать на то, когда фильмы будут получены
-    //и страницу, которую нужно загрузить (это для пагинации)
-    fun getFilmsFromApi(page: Int, callback: HomeFragmentViewModel.ApiCallback) {
+class Interactor(private val repo: MainRepository, private val retrofitService: TmdbApi, private val preferences: PreferenceProvider) {
+    val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    var progressBarState = Channel<Boolean>(Channel.CONFLATED)
+
+    fun getFilmsFromApi(page: Int) {
+        //Показываем ProgressBar
+        scope.launch {
+            progressBarState.send(true)
+        }
+        //Метод getDefaultCategoryFromPreferences() будет получать при каждом запросе нужный нам список фильмов
         retrofitService.getFilms(getDefaultCategoryFromPreferences(), API.KEY, "ru-RU", page).enqueue(object : Callback<TmdbResultsDto> {
             override fun onResponse(call: Call<TmdbResultsDto>, response: Response<TmdbResultsDto>) {
-                //При успехе мы вызываем метод, передаем onSuccess и в этот коллбэк список фильмов
                 val list = Converter.convertApiListToDtoList(response.body()?.tmdbFilms)
                 //Кладем фильмы в бд
-                list.forEach {
-                    repo.putToDb(film = it)
+                //В случае успешного ответа кладем фильмы в БД и выключаем ProgressBar
+                scope.launch {
+                    repo.putToDb(list)
+                    progressBarState.send(false)
                 }
-                callback.onSuccess(list)
             }
 
             override fun onFailure(call: Call<TmdbResultsDto>, t: Throwable) {
-                //В случае провала вызываем другой метод коллбека
-                callback.onFailure()
+                //В случае провала выключаем ProgressBar
+                scope.launch {
+                    progressBarState.send(false)
+                }
             }
         })
     }
@@ -39,6 +52,5 @@ class Interactor(val repo: MainRepository, private val retrofitService: TmdbApi,
     //Метод для получения настроек
     fun getDefaultCategoryFromPreferences() = preferences.getDefaultCategory()
 
-    fun getFilmsFromDB(): List<Film> = repo.getAllFromDB()
-
+    fun getFilmsFromDB(): Flow<List<Film>> = repo.getAllFromDB()
 }

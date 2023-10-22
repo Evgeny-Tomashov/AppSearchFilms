@@ -12,4 +12,7 @@
     <string name="radio_button_upcoming">Soon</string>
     <string name="radio_button_playing">In cinema</string>
     <string name="radio_group_header">Selection on the main screen</string>
+    <string name="permission_storage">No permission. Please provide permission</string>
+    <string name="downloaded_to_gallery">Saved to gallery</string>
+    <string name="open">To the gallery</string>
 </resources>

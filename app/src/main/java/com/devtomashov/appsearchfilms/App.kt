@@ -8,7 +8,6 @@ import com.devtomashov.appsearchfilms.di.DomainModule
 import com.devtomashov.appsearchfilms.di.RemoteModule
 
 
-
 class App : Application() {
     lateinit var dagger: AppComponent
 

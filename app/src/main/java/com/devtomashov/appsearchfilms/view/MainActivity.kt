@@ -2,12 +2,11 @@ package com.devtomashov.appsearchfilms.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.devtomashov.appsearchfilms.databinding.ActivityMainBinding
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.devtomashov.appsearchfilms.R
-import com.devtomashov.appsearchfilms.domain.Film
+import com.devtomashov.appsearchfilms.data.entity.Film
 import com.devtomashov.appsearchfilms.view.fragments.DetailsFragment
 import com.devtomashov.appsearchfilms.view.fragments.FavoritesFragment
 import com.devtomashov.appsearchfilms.view.fragments.HomeFragment

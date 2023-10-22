@@ -10,7 +10,6 @@
     tools:context=".view.fragments.HomeFragment"
     tools:visibility="visible">
 
-
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
         android:layout_width="match_parent"
@@ -40,5 +39,15 @@
             app:layout_constraintTop_toBottomOf="@+id/search_view"
             tools:listitem="@layout/film_item" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
