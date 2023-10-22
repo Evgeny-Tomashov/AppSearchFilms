@@ -16,6 +16,11 @@ import com.devtomashov.appsearchfilms.databinding.FragmentHomeBinding
 import com.devtomashov.appsearchfilms.data.entity.Film
 import com.devtomashov.appsearchfilms.utils.AnimationHelper
 import com.devtomashov.appsearchfilms.viewmodel.HomeFragmentViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 @Suppress("DEPRECATION")
@@ -26,7 +31,9 @@ class HomeFragment : Fragment() {
 
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var scope: CoroutineScope
     private var filmsDataBase = listOf<Film>()
+
         //Используем backing field
         set(value) {
             //Если придет такое же значение то мы выходим из метода
@@ -46,7 +53,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -58,17 +65,31 @@ class HomeFragment : Fragment() {
 
         initSearchView()
         initPullToRefresh()
+        //находим наш RV
         initRecycler()
-
         //Кладем нашу БД в RV
-        viewModel.filmsListLiveData.observe(viewLifecycleOwner) {
-            filmsDataBase = it
-            filmsAdapter.addItems(it)
+        scope = CoroutineScope(Dispatchers.IO).also { scope ->
+            scope.launch {
+                viewModel.filmsListData.collect {
+                    withContext(Dispatchers.Main) {
+                        filmsAdapter.addItems(it)
+                        filmsDataBase = it
+                    }
+                }
+            }
+            scope.launch {
+                for (element in viewModel.showProgressBar) {
+                    launch(Dispatchers.Main) {
+                        binding.progressBar.isVisible = element
+                    }
+                }
+            }
         }
+    }
 
-        viewModel.showProgressBar.observe(viewLifecycleOwner) {
-            binding.progressBar.isVisible = it
-        }
+    override fun onStop() {
+        super.onStop()
+        scope.cancel()
     }
 
     private fun initPullToRefresh() {
@@ -99,15 +120,17 @@ class HomeFragment : Fragment() {
             override fun onQueryTextChange(newText: String): Boolean {
                 //Если ввод пуст то вставляем в адаптер всю БД
                 if (newText.isEmpty()) {
-                    viewModel.filmsListLiveData.observe(viewLifecycleOwner) {
-                        filmsAdapter.addItems(it)
-                    }
+                    filmsAdapter.addItems(filmsDataBase)
                     return true
                 }
                 //Фильтруем список на поиск подходящих сочетаний
-                viewModel.filmsListLiveData.observe(viewLifecycleOwner) {
-                    filmsAdapter.addItems(it.filter { it.title.lowercase(Locale.getDefault()).contains(newText.lowercase(Locale.getDefault())) })
+                val result = filmsDataBase.filter {
+                    //Чтобы все работало правильно, нужно и запроси и имя фильма приводить к нижнему регистру
+                    it.title.toLowerCase(Locale.getDefault())
+                        .contains(newText.toLowerCase(Locale.getDefault()))
                 }
+                //Добавляем в адаптер
+                filmsAdapter.addItems(result)
                 return true
             }
         })
