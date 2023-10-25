@@ -1,7 +1,7 @@
 package com.devtomashov.appsearchfilms.utils
 
 import com.devtomashov.appsearchfilms.data.entity.TmdbFilm
-import com.devtomashov.appsearchfilms.domain.Film
+import com.devtomashov.appsearchfilms.data.entity.Film
 
 object Converter {
     fun convertApiListToDtoList(list: List<TmdbFilm>?): List<Film> {

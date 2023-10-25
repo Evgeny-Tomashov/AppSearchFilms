@@ -1,6 +1,5 @@
 package com.devtomashov.appsearchfilms.di
 
-
 import android.content.Context
 import com.devtomashov.appsearchfilms.data.MainRepository
 import com.devtomashov.appsearchfilms.data.PreferenceProvider
@@ -11,7 +10,6 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-
 //Передаем контекст для SharedPreferences через конструктор
 class DomainModule(val context: Context) {
     //Нам нужно контекст как-то провайдить, поэтому создаем такой метод
@@ -30,5 +28,4 @@ class DomainModule(val context: Context) {
         tmdbApi: TmdbApi,
         preferenceProvider: PreferenceProvider
     ) = Interactor(repo = repository, retrofitService = tmdbApi, preferences = preferenceProvider)
-
 }
