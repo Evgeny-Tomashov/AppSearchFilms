@@ -21,13 +21,13 @@ import com.devtomashov.appsearchfilms.R
 import com.devtomashov.appsearchfilms.data.ApiConstants
 import com.devtomashov.appsearchfilms.databinding.FragmentDetailsBinding
 import com.devtomashov.appsearchfilms.data.entity.Film
+import com.devtomashov.appsearchfilms.view.notifications.NotificationHelper
 import com.devtomashov.appsearchfilms.viewmodel.DetailsFragmentViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class DetailsFragment : Fragment() {
@@ -81,6 +81,10 @@ class DetailsFragment : Fragment() {
 
         binding.detailsFabDownloadWp.setOnClickListener {
             performAsyncLoadOfPoster()
+        }
+
+        binding.detailsFabWatchLater.setOnClickListener {
+            NotificationHelper.createNotification(requireContext(), film)
         }
     }
 
