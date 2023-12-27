@@ -5,10 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.DEFAULT_SCOPED_STORAGE" />
     <uses-permission android:name="android.permission.FORCE_ENABLE_SCOPED_STORAGE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".App"
@@ -21,7 +21,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Splash"
         tools:targetApi="31">
-
         <activity
             android:name=".view.fragments.DetailsFragment"
             android:exported="true"
@@ -35,7 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <receiver android:name=".receivers.ReminderBroadcast" />
     </application>
+
 </manifest>

@@ -84,7 +84,7 @@ class DetailsFragment : Fragment() {
         }
 
         binding.detailsFabWatchLater.setOnClickListener {
-            NotificationHelper.notificationSet(requireContext(), film)
+            NotificationHelper.createNotification(requireContext(), film)
         }
     }
 
