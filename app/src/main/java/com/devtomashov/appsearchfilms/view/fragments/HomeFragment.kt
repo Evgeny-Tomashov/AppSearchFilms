@@ -11,20 +11,15 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.devtomashov.appsearchfilms.view.rv_adapters.FilmListRecyclerAdapter
-import com.devtomashov.appsearchfilms.view.MainActivity
 import com.devtomashov.appsearchfilms.databinding.FragmentHomeBinding
 import com.devtomashov.appsearchfilms.data.entity.Film
 import com.devtomashov.appsearchfilms.utils.AnimationHelper
 import com.devtomashov.appsearchfilms.utils.AutoDisposable
 import com.devtomashov.appsearchfilms.utils.addTo
+import com.devtomashov.appsearchfilms.view.MainActivity
 import com.devtomashov.appsearchfilms.viewmodel.HomeFragmentViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class HomeFragment : Fragment() {
