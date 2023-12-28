@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "576883031668",
+    "project_id": "appsearchfilms-ffa0b",
+    "storage_bucket": "appsearchfilms-ffa0b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576883031668:android:1a1769d9c56c57bad65b21",
+        "android_client_info": {
+          "package_name": "com.devtomashov.appsearchfilms"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9b_KvjXFkd2bvzJnGJoKl75VOP--1fuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576883031668:android:35a9ae01bda433e0d65b21",
+        "android_client_info": {
+          "package_name": "com.devtomashov.appsearchfilms.basic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9b_KvjXFkd2bvzJnGJoKl75VOP--1fuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576883031668:android:0fab56efc8a1eeb2d65b21",
+        "android_client_info": {
+          "package_name": "com.devtomashov.appsearchfilms.pro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9b_KvjXFkd2bvzJnGJoKl75VOP--1fuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
